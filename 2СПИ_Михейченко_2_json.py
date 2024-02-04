@@ -2,25 +2,14 @@
 
 #1
 import json
-from datetime import datetime
-with open('мои_данные.json','r',encoding='utf-8') as json_file:
-    данные = json.load(json_file)
-люди = [
-    {"tele": "+142141","name": "НИКИТА", "spawn": 2020, "city": "Москва"},
-    {"tele": "+99999","name":"НИКИТА2","spawn": 1233,"city":"D2"},
-    {"tele": "+239223","name":"НИКИТА3", "spawn":2001, "city":"Москва"},
-    {"tele": "+13245","name":"НИКИТА5", "spawn":2000, "city":"chi"},
-    {"tele": "+432453","name":"НИКИТА65", "spawn":1999, "city":"nov"},
-    {"tele": "+8800553535","name":"Призрак замка", "spawn":2023, "city":"Москва"},
-    {"tele": "+9999999999","name":"Самбой", "spawn":1969, "city":"Москва"}
-]
-LV = lambda spawn: datetime.now().year - spawn
-люди_в_москве =[человек for человек in люди if человек["city"] =="Москва"]
-средний_возраст =sum(LV(человек["spawn"]) for человек in люди_в_москве) /len(люди_в_москве)
-print("Имена людей из Москвы:")
-for человек in люди_в_москве:
-    print(f"{человек['tele']}{человек['name']}")
-print(f"Их средний возраст:{средний_возраст:.1f}лет")
+with open("test1.json","r", encoding="utf-8*") as file:
+    a = json.load(file)
+    for key in a:
+        d= a[key]['city']
+        if d == "Moscow":
+            print(a[key]['name'])
+            print(a[key]['age'],'лет')
+            print(d,)
 
 #2
 import json
