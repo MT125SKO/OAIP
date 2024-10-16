@@ -1,137 +1,34 @@
-from abc import ABC, abstractmethod
+from PyQt6.QtWidgets import *
 
-class Device(ABC):
+class MainWin(QWidget):
     def __init__(self):
-        self.is_on = False
-        self.volume = 0
+        super().__init__()
+        self.number = 0
+        self.initUI()
 
-    @abstractmethod
-    def turn_on(self):
-        pass
+    def initUI(self):
+        self.resize(700, 400)
+        self.setWindowTitle("Кликер")
+        self.setFixedSize(self.width(), self.height())
+        self.batton = QPushButton('Жми')
+        self.batton.clicked.connect(self.number2)
+        self.check = QLabel(f"Счетчик: {self.number}")
+        main_vl = QVBoxLayout()
+        main_vl.addStretch()
+        main_vl.addWidget(self.batton)
+        main_vl.addWidget(self.check)
+        main_vl.addStretch()
+        self.setLayout(main_vl)
 
-    @abstractmethod
-    def turn_off(self):
-        pass
+    def number2(self):
+        self.number += 1
+        self.check.setText(f"Счетчик: {self.number}")
 
-    @abstractmethod
-    def set_volume(self, volume):
-        pass
+def main():
+    app = QApplication([])
+    win = MainWin()
+    win.show()
+    app.exec()
 
-class Television(Device):
-    def turn_on(self):
-        self.is_on = True
-        print("Телевизор включен")
-
-    def turn_off(self):
-        self.is_on = False
-        print("Телевизор выключен")
-
-    def set_volume(self, volume):
-        self.volume = volume
-        print(f"Громкость телевизора установлена на {volume}")
-
-class Radio(Device):
-    def turn_on(self):
-        self.is_on = True
-        print("Радио включено")
-
-    def turn_off(self):
-        self.is_on = False
-        print("Радио выключено")
-
-    def set_volume(self, volume):
-        self.volume = volume
-        print(f"Громкость радио установлена на {volume}")
-
-class RemoteControl(ABC):
-    def __init__(self, device: Device):
-        self.device = device
-
-    @abstractmethod
-    def toggle_power(self):
-        pass
-
-    @abstractmethod
-    def volume_up(self):
-        pass
-
-    @abstractmethod
-    def volume_down(self):
-        pass
-
-class IRRemoteControl(RemoteControl):
-    def toggle_power(self):
-        if self.device.is_on:
-            self.device.turn_off()
-        else:
-            self.device.turn_on()
-
-    def volume_up(self):
-        self.device.set_volume(self.device.volume + 1)
-
-    def volume_down(self):
-        self.device.set_volume(self.device.volume - 1)
-
-class BluetoothRemoteControl(RemoteControl):
-    def toggle_power(self):
-        if self.device.is_on:
-            self.device.turn_off()
-        else:
-            self.device.turn_on()
-
-    def volume_up(self):
-        self.device.set_volume(self.device.volume + 5)
-
-    def volume_down(self):
-        self.device.set_volume(self.device.volume - 5)
-
-# Мост
-class RemoteControlPlatform:
-    def __init__(self, remote_control: RemoteControl):
-        self._remote_control = remote_control
-
-    def set_remote_control(self, remote_control: RemoteControl):
-        self._remote_control = remote_control
-
-    def execute_command(self, command):
-        if command == "toggle_power":
-            self._remote_control.toggle_power()
-        elif command == "volume_up":
-            self._remote_control.volume_up()
-        elif command == "volume_down":
-            self._remote_control.volume_down()
-        else:
-            print("Неизвестная команда.")
-
-class TVPlatform(RemoteControlPlatform):
-    def execute_command(self, command):
-        print("TV Platform:")
-        super().execute_command(command)
-
-class RadioPlatform(RemoteControlPlatform):
-    def execute_command(self, command):
-        print("Radio Platform:")
-        super().execute_command(command)
-
-# Демонстрация
-if __name__ == '__main__':
-    tv = Television()
-    radio = Radio()
-
-    ir_remote = IRRemoteControl(tv)
-    bluetooth_remote = BluetoothRemoteControl(radio)
-
-    tv_platform = TVPlatform(ir_remote)
-    radio_platform = RadioPlatform(bluetooth_remote)
-
-    print("Управление телевизором:")
-    tv_platform.execute_command("toggle_power")
-    tv_platform.execute_command("volume_up")
-    tv_platform.execute_command("volume_down")
-    tv_platform.execute_command("toggle_power")
-
-    print("\nУправление радио:")
-    radio_platform.execute_command("toggle_power")
-    radio_platform.execute_command("volume_up")
-    radio_platform.execute_command("volume_down")
-    radio_platform.execute_command("toggle_power")
+if __name__ == "__main__":
+    main()
